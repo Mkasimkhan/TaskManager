@@ -11,12 +11,14 @@ import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserManagement from './components/UserManagement';
 import SecurityBriefingTasks from './components/SecurityBriefingTasks';
+import UserProgressPage from './components/UserprogressPage';
+import AddUserPage from './components/AddUserPage';
 
 const router = createBrowserRouter([
   // Login page on root `/`
   { path: '/', element: <Login /> },
 
-  // Protected routes under /app (or any base path you want)
+  // Protected routes under /app
   {
     path: '/app',
     element: (
@@ -41,10 +43,26 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: 'user-progress',
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <UserProgressPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'add-user',
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <AddUserPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 
-  // Catch all unknown routes and redirect to login (or a 404 page if you want)
+  // Catch-all fallback
   { path: '*', element: <Login /> },
 ]);
 

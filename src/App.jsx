@@ -11,8 +11,21 @@ import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserManagement from './components/UserManagement';
 import SecurityBriefingTasks from './components/SecurityBriefingTasks';
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Clear localStorage session data
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // if you store tokens
+
+    // Optional: Redirect to login
+    navigate("/login");
+  }, []);
+
+
   const router = createBrowserRouter([
     {
       path: '/',

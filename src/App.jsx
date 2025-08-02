@@ -1,39 +1,54 @@
-
-
-import { Route, Routes } from 'react-router-dom'
-import './index.css'
-import AddTask from './components/AddTask';
-import Sidebar from './components/Sidebar';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import RootLayout from './layout/RootLayout';
 import AllTasks from './components/AllTasks';
-import CompleteTask from './components/CompleteTask';
-import InProgressTask from './components/InProgressTask';
+import RemovalTask from './components/RemovalTask';
+import InstallationTask from './components/InstallationTask';
+import ComplaintTasks from './components/ComplaintTasks';
+import HealthCheckUpTask from './components/HealthCheckUpTask';
 import Dashboard from './components/Dashboard';
-import PendingTask from './components/PendingTask';
-import Deployed from './components/Deployed';
-import Deferred from './components/Deferred';
-import './App.css'
-
+import AddTask from './components/AddTask';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import UserManagement from './components/UserManagement';
+import SecurityBriefingTasks from './components/SecurityBriefingTasks';
 
 const App = () => {
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: (
+        <ProtectedRoute>
+          {console.log('Outer ProtectedRoute wrapper')}
+          <RootLayout />
+        </ProtectedRoute>
+      ),
+      children: [
+        { path: '/', element: <AllTasks /> },
+        { path: '/addTask', element: <AddTask /> },
+        { path: '/removalTask', element: <RemovalTask /> },
+        { path: '/installationTask', element: <InstallationTask /> },
+        { path: '/complaintTask', element: <ComplaintTasks /> },
+        { path: '/healthcheckupTask', element: <HealthCheckUpTask /> },
+        { path: '/securitybriefingTask', element: <SecurityBriefingTasks /> },
+        { path: '/statsTask', element: <Dashboard /> },
 
-  return (
+        // 🔒 Admin-only
+        {
+          path: '/user-management',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              {console.log('Inner ProtectedRoute for admin')}
+              <UserManagement />
+            </ProtectedRoute>
+          ),
+        },
+      ],
+    },
+    { path: '/login', element: <Login /> },
+    { path: '*', element: <Login /> },
+  ]);
 
-    <div className='flex h-full'>
-      <Sidebar />
-      <Routes>
-        <Route path="/" element={<AllTasks />} />
-        <Route path="/addTask" element={<AddTask />} />
-        <Route path="/allTask" element={<AllTasks />} />
-        <Route path="/completeTask" element={<CompleteTask />} />
-        <Route path="/pendingTask" element={<PendingTask />} />
-        <Route path="/deployedTask" element={<Deployed />} />
-        <Route path="/deferredTask" element={<Deferred />} />
-        <Route path="/inProgressTask" element={<InProgressTask />} />
-        <Route path="/statsTask" element={<Dashboard />} />
-      </Routes>
-    </div>
-
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

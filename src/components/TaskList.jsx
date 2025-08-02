@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux';
-import Task from './Task'; // Reference the Task component
+// import { useSelector } from 'react-redux';
+// import Task from './Task'; // Reference the Task component
 
-const TaskList = () => {
-    const tasks = useSelector(state => state.tasks);
+// const TaskList = () => {
+//     const tasks = useSelector(state => state.tasks);
 
-    return (
-        <ul className="task-list">
-            {tasks.map(task => (
-                <Task key={task.id} {...task} /> 
-            ))}
-        </ul>
-    );
-};
+//     return (
+//         <ul className="task-list">
+//             {tasks.map(task => (
+//                 <Task key={task.id} {...task} /> 
+//             ))}
+//         </ul>
+//     );
+// };
 
-export default TaskList;
+// export default TaskList;

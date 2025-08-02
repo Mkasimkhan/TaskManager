@@ -1,171 +1,222 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useDispatch } from "react-redux";
-import { addTask } from "../store/taskSlice";
+
+// Firebase imports
+import { db } from "../firebase";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const AddTask = () => {
-    const dispatch = useDispatch();
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    startDate: new Date(),
+    endDate: null,
+    status: 'Pending',
+    assignee: '',
+    priority: 'P0',
+    type: ''
+  });
+
+  const [userEmails, setUserEmails] = useState([]);
+
+  // Fetch user emails on component mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const emails = usersSnapshot.docs.map(doc => doc.data().email);
+        setUserEmails(emails);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleStartDateChange = (date) => {
+    if (date instanceof Date && !isNaN(date)) {
+      setFormData({ ...formData, startDate: date });
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+    setFormData({ ...formData, endDate: date });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { title, description, startDate, endDate, status, assignee, priority, type } = formData;
+
+    if (!title || !description || !startDate || !status || !assignee || !priority || !type) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const serializableFormData = {
+      ...formData,
+      startDate: startDate.toISOString(),
+      endDate: endDate ? endDate.toISOString() : null
+    };
+
+    try {
+      await addDoc(collection(db, "tasks"), serializableFormData);
+      alert("Task added successfully!");
+      setFormData({
         title: '',
         description: '',
         startDate: new Date(),
         endDate: null,
         status: 'Pending',
         assignee: '',
-        priority: 'P0'
-    });
+        priority: 'P0',
+        type: ''
+      });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert("Failed to add task. " + error.message);
+    }
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+  return (
+    <div className="w-[70%] mx-auto">
+      <h1 className="text-3xl font-bold mt-4 mb-4 text-center">Add New Task</h1>
+      <div className="grid place-items-center">
+        <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+          
+          {/* Title */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-xs font-bold mb-2">Title</label>
+            <input
+              type="text"
+              name="title"
+              placeholder="Task Title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+            />
+          </div>
 
-    const handleEndDateChange = (date) => {
-        setFormData({
-            ...formData,
-            endDate: date
-        });
-    };
+          {/* Description */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-xs font-bold mb-2">Description</label>
+            <textarea
+              name="description"
+              placeholder="Task Description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+            />
+          </div>
 
-    const handleStartDateChange = (date) => {
-        // Check if date is a valid Date object
-        if (date instanceof Date && !isNaN(date)) {
-            setFormData({
-                ...formData,
-                startDate: date
-            });
-        }
-    };
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const serializableFormData = {
-            ...formData,
-            startDate: formData.startDate.toISOString(),
-            endDate: formData.endDate ? formData.endDate.toISOString() : null
-        };
-        console.log(serializableFormData);
-        dispatch(addTask(serializableFormData));
-        setFormData({
-            title: '',
-            description: '',
-            startDate: new Date(),
-            endDate: null,
-            status: 'Pending',
-            assignee: '',
-            priority: ''
-        });
-    };
-
-
-    return (
-        <div className="w-[70%] mx-auto">
-            <div className=''>
-                <h1 className="text-3xl font-bold my-8 text-center">Add New Task</h1>
-                <div className='grid place-items-center'>
-                    <form className="w-full mt-12 sm:mt-0 max-w-lg" onSubmit={handleSubmit}>
-                        <div className="flex flex-wrap -mx-3 mb-2 sm:mb-6">
-                            <div className="w-full px-3 mb-6 md:mb-0">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="title">
-                                    Title
-                                </label>
-                                <input
-                                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="title"
-                                    type="text"
-                                    placeholder="Task Title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap -mx-3 mb-2 sm:mb-6">
-                            <div className="w-full px-3">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="description">
-                                    Description
-                                </label>
-                                <textarea
-                                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="description"
-                                    placeholder="Task Description"
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap -mx-3 mb-2 sm:mb-6">
-                            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="startDate">
-                                    Start Date
-                                </label>
-                                <DatePicker
-                                    selected={formData.startDate}
-                                    onChange={handleStartDateChange}
-                                    dateFormat="dd/MM/yyyy"
-                                    className="appearance-none block w-[280px] sm:w-[245px] bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                />
-                            </div>
-                            <div className="w-full md:w-1/2 px-3 mb-2 sm:mb-6 md:mb-0">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="endDate">
-                                    End Date
-                                </label>
-                                <DatePicker
-                                    selected={formData.endDate}
-                                    onChange={handleEndDateChange}
-                                    dateFormat="dd/MM/yyyy"
-                                    className="appearance-none block w-[280px] sm:w-[245px] bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap -mx-3 mb-2 sm:mb-6">
-                            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="status">
-                                    Status
-                                </label>
-                                <select
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="status"
-                                    name="status"
-                                    value={formData.status}
-                                    onChange={handleChange}
-                                >
-                                    <option value="Pending">Pending</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Deployed">Deployed</option>
-                                    <option value="Deferred">Deferred</option>
-                                </select>
-                            </div>
-                            <div className="w-full md:w-1/2 px-3">
-                                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="priority">
-                                    Priority
-                                </label>
-                                <select
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="priority"
-                                    name="priority"
-                                    value={formData.priority}
-                                    onChange={handleChange}
-                                >
-                                    <option value="P0">P0</option>
-                                    <option value="P1">P1</option>
-                                    <option value="P2">P2</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type='submit' className='mt-8 w-full p-3 bg-indigo-500 rounded-lg text-center text-white hover:bg-indigo-300'>Add</button>
-                    </form>
-                </div>
+          {/* Start and End Dates */}
+          <div className="flex gap-4 mb-6">
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-xs font-bold mb-2">Start Date</label>
+              <DatePicker
+                selected={formData.startDate}
+                onChange={handleStartDateChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+              />
             </div>
-        </div>
-    );
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-xs font-bold mb-2">End Date</label>
+              <DatePicker
+                selected={formData.endDate}
+                onChange={handleEndDateChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Status and Priority */}
+          <div className="flex gap-4 mb-6">
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-xs font-bold mb-2">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+              >
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-xs font-bold mb-2">Priority</label>
+              <select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+              >
+                <option value="P0">P0</option>
+                <option value="P1">P1</option>
+                <option value="P2">P2</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Task Type */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-xs font-bold mb-2">Task Type</label>
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+            >
+              <option value="">Select Type</option>
+              <option value="Removal">Removal</option>
+              <option value="Installation">Installation</option>
+              <option value="Health CheckUp">Health CheckUp</option>
+              <option value="Complaint">Complaint</option>
+              <option value="Security Briefing">Security Briefing</option>
+            </select>
+          </div>
+
+          {/* Assignee Dropdown */}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-xs font-bold mb-2">Assignee</label>
+            <select
+              name="assignee"
+              value={formData.assignee}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
+            >
+              <option value="">Select Assignee</option>
+              {userEmails.map((email, idx) => (
+                <option key={idx} value={email}>
+                  {email}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-400 transition"
+          >
+            Add Task
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default AddTask;

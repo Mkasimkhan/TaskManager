@@ -34,7 +34,7 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("user");
-        navigate("/login");
+        navigate("/");
     };
 
     return (
@@ -49,7 +49,7 @@ const Sidebar = () => {
                 <nav className="flex gap-10 justify-start">
                     <ul className="py-6 flex flex-col justify-start">
                         <Link
-                            to="/"
+                            to="/app/allTasks"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdDashboard className="text-2xl" />
@@ -57,7 +57,7 @@ const Sidebar = () => {
                         </Link>
 
                         <Link
-                            to="/removalTask"
+                            to="/app/removalTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdOutlineTaskAlt className="text-2xl" />
@@ -65,7 +65,7 @@ const Sidebar = () => {
                         </Link>
 
                         <Link
-                            to="/installationTask"
+                            to="/app/installationTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdPendingActions className="text-2xl" />
@@ -73,7 +73,7 @@ const Sidebar = () => {
                         </Link>
 
                         <Link
-                            to="/healthcheckupTask"
+                            to="/app/healthcheckupTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <GrInProgress className="text-2xl" />
@@ -81,7 +81,7 @@ const Sidebar = () => {
                         </Link>
 
                         <Link
-                            to="/complaintTask"
+                            to="/app/complaintTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdCloudDone className="text-2xl" />
@@ -89,7 +89,7 @@ const Sidebar = () => {
                         </Link>
 
                         <Link
-                            to="/securitybriefingTask"
+                            to="/app/securitybriefingTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdCloudDone className="text-2xl" />
@@ -98,7 +98,7 @@ const Sidebar = () => {
 
                         {userRole === "admin" && (
                             <Link
-                                to="/addTask"
+                                to="/app/addTask"
                                 className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                             >
                                 <MdAddTask className="text-2xl" />
@@ -108,7 +108,7 @@ const Sidebar = () => {
 
 
                         <Link
-                            to="/statsTask"
+                            to="/app/statsTask"
                             className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                         >
                             <MdQueryStats className="text-2xl" />
@@ -117,7 +117,7 @@ const Sidebar = () => {
 
                         {userRole === "admin" && (
                             <Link
-                                to="/user-management"
+                                to="/app/user-management"
                                 className="px-6 py-3 font-semibold text-lg text-gray-300 hover:text-gray-700 cursor-pointer flex justify-start items-center gap-2"
                             >
                                 <MdPeople className="text-2xl" />

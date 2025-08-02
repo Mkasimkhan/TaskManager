@@ -13,7 +13,7 @@ const RootLayout = () => {
   const [priorityFilter, setPriorityFilter] = useState('All');
 
   const pageTitles = {
-    '/': 'Task Board',
+    '/allTasks': 'Task Board',
     '/removalTask': 'Removal Task',
     '/installationTask': 'Installation Task',
     '/healthcheckupTask': 'Health Checkup Task',

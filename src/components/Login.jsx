@@ -32,7 +32,7 @@ const Login = () => {
         );
       }
 
-      navigate("/");
+      navigate("/app/allTasks");
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed: " + error.message);

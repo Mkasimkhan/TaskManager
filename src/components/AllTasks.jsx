@@ -11,7 +11,6 @@ const AllTasks = () => {
   const tasks = useSelector(selectAllTasks);
 
   const { startDate, endDate, statusFilter, priorityFilter } = useOutletContext();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [showTasks, setShowTasks] = useState(true);
@@ -30,18 +29,17 @@ const AllTasks = () => {
     priorityFilter,
   });
 
-const total = filteredTasks.length;
-const pending = filteredTasks.filter(task => task.status === "Pending").length;
-const completed = filteredTasks.filter(task => task.status === "Completed").length;
-
+  const total = filteredTasks.length;
+  const pending = filteredTasks.filter((task) => task.status === "Pending").length;
+  const completed = filteredTasks.filter((task) => task.status === "Completed").length;
 
   return (
-    <div className="mx-auto ">
+    <div className="mx-auto px-4">
       <TaskStats total={total} pending={pending} completed={completed} />
 
       {filteredTasks.length > 0 ? (
         <>
-          <div className="flex justify-between items-center mt-4 mb-2 mx-4">
+          <div className="flex justify-between items-center mt-4 mb-2">
             <h2 className="text-xl font-semibold">All Tasks</h2>
             <button
               className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition"
@@ -54,8 +52,10 @@ const completed = filteredTasks.filter(task => task.status === "Completed").leng
           {showTasks && (
             <div className="flex justify-center">
               <div
-                className="inline-grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-h-[75vh] pb-4 mt-5"
-                style={{ maxWidth: "100%" }}
+                className="grid gap-6 mt-5 pb-4 max-h-[75vh] justify-center w-full"
+                style={{
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                }}
               >
                 {filteredTasks.map((task) => (
                   <TaskCard
@@ -78,7 +78,7 @@ const completed = filteredTasks.filter(task => task.status === "Completed").leng
       ) : (
         <div className="text-center mt-24">
           <p className="text-gray-500">
-            No removal tasks found.{" "}
+            No tasks found.{" "}
             {user?.role === "admin" && (
               <Link to="/addTask" className="text-indigo-500 underline">
                 Add a new task

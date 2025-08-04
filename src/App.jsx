@@ -1,24 +1,22 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from './layout/RootLayout';
-import AllTasks from './components/AllTasks';
-import RemovalTask from './components/RemovalTask';
-import InstallationTask from './components/InstallationTask';
-import ComplaintTasks from './components/ComplaintTasks';
-import HealthCheckUpTask from './components/HealthCheckUpTask';
-import Dashboard from './components/Dashboard';
-import AddTask from './components/AddTask';
-import Login from './components/Login';
+import AllTasks from './pages/AllTasks';
+import RemovalTask from './pages/RemovalTask';
+import InstallationTask from './pages/InstallationTask';
+import HealthCheckUpTask from './pages/HealthCheckUpTask';
+import Dashboard from './pages/Dashboard';
+import AddTask from './pages/AddTask';
+import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-import UserManagement from './components/UserManagement';
-import SecurityBriefingTasks from './components/SecurityBriefingTasks';
-import UserProgressPage from './components/UserprogressPage';
-import AddUserPage from './components/AddUserPage';
+import UserManagement from './pages/UserManagement';
+import SecurityBriefingTasks from './pages/SecurityBriefingTasks';
+import UserProgressPage from './pages/UserprogressPage';
+import AddUserPage from './pages/AddUserPage';
+import ComplaintTasksPage from './pages/ComplainTasksPage';
 
 const router = createBrowserRouter([
-  // Login page on root `/`
   { path: '/', element: <Login /> },
 
-  // Protected routes under /app
   {
     path: '/app',
     element: (
@@ -31,7 +29,7 @@ const router = createBrowserRouter([
       { path: 'addTask', element: <AddTask /> },
       { path: 'removalTask', element: <RemovalTask /> },
       { path: 'installationTask', element: <InstallationTask /> },
-      { path: 'complaintTask', element: <ComplaintTasks /> },
+      { path: 'complaintTask', element: <ComplaintTasksPage /> },
       { path: 'healthcheckupTask', element: <HealthCheckUpTask /> },
       { path: 'securitybriefingTask', element: <SecurityBriefingTasks /> },
       { path: 'statsTask', element: <Dashboard /> },
@@ -62,7 +60,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Catch-all fallback
+
   { path: '*', element: <Login /> },
 ]);
 

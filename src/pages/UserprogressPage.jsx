@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasksFromFirebase, selectAllTasks } from "../store/taskSlice";
-import TaskStats from "./TaskStats";
+import TaskStats from "../components/TaskStats";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { filterTasks } from "./filterTasks";
+import { filterTasks } from "../components/filterTasks";
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -16,11 +16,11 @@ const UserProgressPage = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  // Optional date filters (can add date pickers later)
+  
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  // Fetch all users
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -35,17 +35,17 @@ const UserProgressPage = () => {
     fetchUsers();
   }, []);
 
-  // Fetch tasks once
+  
   useEffect(() => {
     dispatch(fetchTasksFromFirebase({ role: "admin" }));
   }, [dispatch]);
 
-  // Filter tasks by selected user
+
   const tasks = selectedUser
     ? allTasks.filter(task => task.assignee === selectedUser)
     : [];
 
-  // Further filtering by status, dates, etc
+
   const filteredTasks = filterTasks({
     tasks,
     statusFilter,
@@ -58,9 +58,9 @@ const UserProgressPage = () => {
   const pending = filteredTasks.filter(task => task.status === "Pending").length;
   const completed = filteredTasks.filter(task => task.status === "Completed").length;
 
-  // Excel download handler
+ 
   const handleDownloadExcel = () => {
-    // Map tasks to a plain object for Excel
+
     const dataForExcel = filteredTasks.map(task => ({
       Title: task.title,
       Description: task.description,
@@ -71,26 +71,26 @@ const UserProgressPage = () => {
       Type: task.type,
     }));
 
-    // Create worksheet from data
+    
     const worksheet = XLSX.utils.json_to_sheet(dataForExcel);
 
-    // Create a new workbook and append the worksheet
+   
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
 
-    // Write workbook to binary string
+    
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
     });
 
-    // Create a Blob from the buffer
+    
     const blob = new Blob([excelBuffer], {
       type:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
 
-    // Save the file
+    
     saveAs(blob, `${selectedUser}_tasks.xlsx`);
   };
 

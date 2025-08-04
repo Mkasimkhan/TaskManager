@@ -1,5 +1,3 @@
-// src/utils/filterTasks.js
-
 export const filterTasks = ({
   tasks,
   type,

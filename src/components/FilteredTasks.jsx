@@ -278,7 +278,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                             Update
                           </button> */}
                           <button
-                            disabled={task.status === "Completed" && user?.role !== "user"}
+                            disabled={task.status === "Completed" && user?.role === "user"}
                             style={{
                               backgroundColor:
                                 task.status === "Pending"
@@ -308,6 +308,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                           >
                             Update
                           </button>
+
 
                         </td>
                       </tr>

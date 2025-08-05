@@ -1,6 +1,6 @@
 import { FaTasks, FaHourglassHalf, FaCheckCircle } from "react-icons/fa";
 
-const TaskStats = ({ total, pending, completed }) => {
+const TaskStats = ({ total, pending, completed, onStatusClick }) => {
   const stats = [
     {
       title: "Total Tasks",
@@ -8,6 +8,7 @@ const TaskStats = ({ total, pending, completed }) => {
       icon: <FaTasks size={28} />,
       bg: "bg-blue-100",
       text: "text-blue-800",
+      status: null, // Clicking this shows all tasks
     },
     {
       title: "Pending Tasks",
@@ -15,6 +16,7 @@ const TaskStats = ({ total, pending, completed }) => {
       icon: <FaHourglassHalf size={28} />,
       bg: "bg-yellow-100",
       text: "text-yellow-800",
+      status: "Pending",
     },
     {
       title: "Completed Tasks",
@@ -22,6 +24,7 @@ const TaskStats = ({ total, pending, completed }) => {
       icon: <FaCheckCircle size={28} />,
       bg: "bg-green-100",
       text: "text-green-800",
+      status: "Completed",
     },
   ];
 
@@ -30,7 +33,8 @@ const TaskStats = ({ total, pending, completed }) => {
       {stats.map((stat, index) => (
         <div
           key={index}
-          className={`${stat.bg} ${stat.text} p-6 rounded-xl shadow-md flex flex-col items-center justify-center transition hover:scale-105 hover:shadow-lg`}
+          className={`${stat.bg} ${stat.text} p-6 rounded-xl shadow-md flex flex-col items-center justify-center transition hover:scale-105 hover:shadow-lg cursor-pointer`}
+          onClick={() => onStatusClick?.(stat.status)}
         >
           <div className="mb-3">{stat.icon}</div>
           <h3 className="text-lg font-semibold">{stat.title}</h3>

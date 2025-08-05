@@ -15,12 +15,15 @@ const AddTask = () => {
     status: 'Pending',
     assignee: '',
     priority: 'P0',
-    type: ''
+    type: '',
+    remarks: [],
+    lastUpdatedOn: '',
+    completedDate: ''
   });
 
   const [userEmails, setUserEmails] = useState([]);
 
- 
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -65,7 +68,9 @@ const AddTask = () => {
     const serializableFormData = {
       ...formData,
       startDate: startDate.toISOString(),
-      endDate: endDate ? endDate.toISOString() : null
+      endDate: endDate ? endDate.toISOString() : null,
+      remarks: [],
+      completedDate: '',
     };
 
     try {
@@ -79,7 +84,8 @@ const AddTask = () => {
         status: 'Pending',
         assignee: '',
         priority: 'P0',
-        type: ''
+        type: '',
+        remarks: [],
       });
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -92,7 +98,7 @@ const AddTask = () => {
       <h1 className="text-3xl font-bold mt-4 mb-4 text-center">Add New Task</h1>
       <div className="grid place-items-center">
         <form className="w-full max-w-lg" onSubmit={handleSubmit}>
-          
+
           {/* Title */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">Title</label>
@@ -131,7 +137,7 @@ const AddTask = () => {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-xs font-bold mb-2">End Date</label>
+              <label className="block text-gray-700 text-xs font-bold mb-2">Due Date</label>
               <DatePicker
                 selected={formData.endDate}
                 onChange={handleEndDateChange}

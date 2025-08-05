@@ -66,6 +66,15 @@ const taskSlice = createSlice({
 
     updateTask: (state, action) => {
       const { firebaseId, ...updatedFields } = action.payload;
+
+      const index = state.findIndex(task => task.firebaseId === firebaseId);
+      if (index !== -1) {
+        state[index] = {
+          ...state[index],
+          ...updatedFields,
+        };
+      }
+
       updateDoc(doc(db, "tasks", firebaseId), updatedFields)
         .then(() => console.log("Task updated"))
         .catch((error) => console.error("Error updating task:", error));

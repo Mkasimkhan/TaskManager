@@ -14,7 +14,7 @@ const AddTask = () => {
     endDate: null,
     status: 'Pending',
     assignee: '',
-    priority: 'P0',
+    priority: 'Low',
     type: '',
     remarks: [],
     lastUpdatedOn: '',
@@ -83,7 +83,7 @@ const AddTask = () => {
         endDate: null,
         status: 'Pending',
         assignee: '',
-        priority: 'P0',
+        priority: 'Low',
         type: '',
         remarks: [],
       });
@@ -169,9 +169,9 @@ const AddTask = () => {
                 onChange={handleChange}
                 className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
               >
-                <option value="P0">P0</option>
-                <option value="P1">P1</option>
-                <option value="P2">P2</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
               </select>
             </div>
           </div>

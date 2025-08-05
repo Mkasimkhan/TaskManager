@@ -1,25 +1,4 @@
-// export const filterTasks = ({
-//   tasks,
-//   type,
-//   startDate,
-//   endDate,
-//   statusFilter,
-//   priorityFilter,
-// }) => {
-//   return tasks.filter(task => {
-//     const taskDate = new Date(task.startDate);
-//     const isDateInRange =
-//       (!startDate || taskDate >= startDate) &&
-//       (!endDate || taskDate <= endDate);
-//     const isStatusMatch =
-//       statusFilter === "All" || task.status === statusFilter;
-//     const isPriorityMatch =
-//       priorityFilter === "All" || task.priority === priorityFilter;
-//     const isTypeMatch = type ? task.type === type : true;
 
-//     return isDateInRange && isStatusMatch && isPriorityMatch && isTypeMatch;
-//   });
-// };
 import dayjs from "dayjs";
 
 export const filterTasks = ({

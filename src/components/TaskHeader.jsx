@@ -72,9 +72,9 @@ const TaskHeader = ({
                             className="bg-white px-4 py-2 rounded-xl border border-gray-300 shadow-sm"
                         >
                             <option value="All">All Priority</option>
-                            <option value="P0">P0</option>
-                            <option value="P1">P1</option>
-                            <option value="P2">P2</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
                         </select>
                     </div>
                 </div>

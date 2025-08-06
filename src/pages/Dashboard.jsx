@@ -1,80 +1,145 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase"; 
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    selectAllTasks,
+    fetchTasksFromFirebase,
+} from "../store/taskSlice";
+import { BarChart } from "@mui/x-charts";
+import "../styles/Dashboard.css";
 
-const Card = ({ label, count, bg }) => {
-    return (
-        <Link to="/allTask">
-            <div className="w-full h-32 bg-white p-5 shadow-md rounded-md flex items-center justify-between cursor-pointer">
-                <div className="h-full flex flex-1 flex-col justify-between">
-                    <p className="text-base text-gray-600">{label}</p>
-                    <span className="text-2xl font-semibold">{count}</span>
-                    <span className="text-sm text-gray-400">Live count</span>
-                </div>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${bg}`}>
-                    {label.charAt(0)}
-                </div>
-            </div>
-        </Link>
-    );
-};
-
-Card.propTypes = {
-    label: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired,
-    bg: PropTypes.string.isRequired,
-};
+const ALL_TASK_TYPES = [
+    "Removal",
+    "Complaint",
+    "Installation",
+    "Health CheckUp",
+    "Security Briefing",
+];
 
 const Dashboard = () => {
-    const [taskStats, setTaskStats] = useState({
-        total: 0,
-        completed: 0,
-        inProgress: 0,
-        pending: 0,
-    });
+    const dispatch = useDispatch();
+    const tasks = useSelector(selectAllTasks);
+    const [loading, setLoading] = useState(true);
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            const querySnapshot = await getDocs(collection(db, "tasks"));
-            const tasks = querySnapshot.docs.map((doc) => doc.data());
+        if (user) {
+            dispatch(fetchTasksFromFirebase({ role: user.role, email: user.email }))
+                .then(() => setLoading(false));
+        }
+    }, [dispatch, user]);
 
-            const stats = {
-                total: tasks.length,
-                completed: tasks.filter((task) => task.status === "Completed").length,
-                inProgress: tasks.filter((task) => task.status === "In Progress").length,
-                pending: tasks.filter((task) => task.status === "Pending").length,
-                deployed: tasks.filter((task) => task.status === "Deployed").length,
-            };
+    const currentUserTasks =
+        user?.role === "admin"
+            ? tasks
+            : tasks.filter((t) => t.assignee === user.email);
 
-            setTaskStats(stats);
-        };
+    const uniqueUsers = [...new Set(currentUserTasks.map((t) => t.assignee || "Unknown"))];
 
-        fetchTasks();
-    }, []);
-
-    const stats = [
-        { label: "TOTAL TASK", total: taskStats.total, bg: "bg-[#1d4ed8]" },
-        { label: "COMPLETED TASK", total: taskStats.completed, bg: "bg-[#0f766e]" },
-        { label: "TASK IN PROGRESS", total: taskStats.inProgress, bg: "bg-[#f59e0b]" },
-        { label: "PENDING", total: taskStats.pending, bg: "bg-[#be185d]" },
-    ];
+    if (loading) return <p>Loading...</p>;
 
     return (
-        <div className="mx-auto w-[80%]">
-            <div className="flex flex-col w-full justify-between">
-                <h1 className="sm:text-2xl text-3xl font-bold my-8 text-center">Tasks</h1>
-                <div className="h-full w-80% mx-auto py-4 px-10">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-5 place-item-center">
-                        {stats.map(({ label, total, bg }, index) => (
-                            <Card key={index} bg={bg} label={label} count={total} />
-                        ))}
-                    </div>
-                </div>
+        <div className="dashboard-container">
+            <h2 className="dashboard-title">
+                {/* {user.role === "admin" ? "Admin Dashboard" : "User Dashboard"} */}
+                Task Stats
+            </h2>
+
+            {/* Summary Cards */}
+            <div className="dashboard-cards">
+                {ALL_TASK_TYPES.map((type) => {
+                    const completed = currentUserTasks.filter(
+                        (t) => t.type === type && t.status === "Completed"
+                    ).length;
+                    const pending = currentUserTasks.filter(
+                        (t) => t.type === type && t.status === "Pending"
+                    ).length;
+
+                    return (
+                        <div className="dashboard-card" key={type}>
+                            <SummaryCard type={type} completed={completed} pending={pending} />
+                        </div>
+                    );
+                })}
             </div>
+
+            {/* User-wise Charts */}
+            {uniqueUsers.map((userEmail) => {
+                const userTasks = currentUserTasks.filter((t) => t.assignee === userEmail);
+
+                const completedCounts = ALL_TASK_TYPES.map(
+                    (type) =>
+                        userTasks.filter(
+                            (t) => t.type === type && t.status === "Completed"
+                        ).length
+                );
+
+                const pendingCounts = ALL_TASK_TYPES.map(
+                    (type) =>
+                        userTasks.filter(
+                            (t) => t.type === type && t.status === "Pending"
+                        ).length
+                );
+
+                return (
+                    <div className="user-chart" key={userEmail}>
+                        <h3 className="user-chart-title">Task Overview: <strong>{userEmail}</strong></h3>
+                        <BarChart
+                            xAxis={[
+                                {
+                                    id: "taskTypes",
+                                    data: ALL_TASK_TYPES,
+                                    scaleType: "band",
+                                    label: "Task Type",
+                                },
+                            ]}
+                            series={[
+                                {
+                                    label: "Completed",
+                                    data: completedCounts,
+                                    color: "#4caf50",
+                                },
+                                {
+                                    label: "Pending",
+                                    data: pendingCounts,
+                                    color: "#f44336",
+                                },
+                            ]}
+                            height={300}
+                            width={800}
+                            margin={{ top: 20, bottom: 30, left: 60, right: 20 }}
+                            grouping="grouped"
+                            slotProps={{
+                                legend: {
+                                    direction: 'row',
+                                    position: {
+                                        vertical: 'bottom',
+                                        horizontal: 'middle',
+                                    },
+                                },
+                            }}
+                        />
+
+                    </div>
+                );
+            })}
         </div>
     );
 };
 
 export default Dashboard;
+
+const SummaryCard = ({ type, completed, pending }) => (
+    <div className="summary-card">
+        <h3>{type}</h3>
+        <div className="summary-stats">
+            <div>
+                <p className="label">Completed</p>
+                <p className="value green">{completed}</p>
+            </div>
+            <div>
+                <p className="label">Pending</p>
+                <p className="value red">{pending}</p>
+            </div>
+        </div>
+    </div>
+);

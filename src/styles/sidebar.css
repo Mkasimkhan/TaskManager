@@ -49,6 +49,9 @@
   text-decoration: none;
   transition: color 0.2s ease;
 }
+.sidebar .label{
+  color:#d1d5db
+}
 
 .sidebar nav a:hover {
   color: #374151;

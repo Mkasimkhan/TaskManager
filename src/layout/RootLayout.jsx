@@ -58,7 +58,7 @@ const RootLayout = () => {
         />
       </main> */}
 
-      <main className="flex-1 overflow-y-auto bg-gray-50 mb-10">
+      <main className="flex-1 overflow-y-auto bg-gray-50">
         {/* {location.pathname !== '/app/addTask' && location.pathname !== '/app/statsTask' && location.pathname !==  '/app/user-management' && location.pathname !==  '/app/add-user' && location.pathname !==  '/app/user-progress' && (
           <TaskHeader
             title={title}

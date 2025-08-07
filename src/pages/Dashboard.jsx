@@ -281,13 +281,6 @@ const Dashboard = () => {
                             borderWidth: 1
                         }
                     },
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const type = taskTypeData[index].type;
-                            setSelectedType(type === selectedType ? null : type);
-                        }
-                    }
                 }
             });
         }

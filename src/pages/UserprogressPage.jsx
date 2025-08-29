@@ -13,34 +13,42 @@ const columns = [
   { header: "Title", key: "title" },
   { header: "Description", key: "description" },
   {
-    header: "Start Date", key: "startDate",
-    render: (value) => (value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA")
+    header: "Start Date",
+    key: "startDate",
+    render: (value) =>
+      value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA",
   },
   {
-    header: "Due Date", key: "endDate",
-    render: (value) => (value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA")
+    header: "Due Date",
+    key: "endDate",
+    render: (value) =>
+      value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA",
   },
   {
-    header: "End Date", key: "completedDate",
-    render: (value) => (value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA")
+    header: "End Date",
+    key: "completedDate",
+    render: (value) =>
+      value ? dayjs(value).format("DD MMM YYYY, hh:mm A") : "NA",
   },
   { header: "Status", key: "status" },
   { header: "Priority", key: "priority" },
   { header: "Type", key: "type" },
+  { header: "Assignor", key: "assignor" },
   {
     header: "Remarks",
     key: "remarks",
     render: (remarks) =>
       Array.isArray(remarks) && remarks.length > 0
         ? remarks
-          .map(
-            (r) =>
-              `${r.text} (${r.time ? dayjs(r.time).format("DD MMM, h:mm A") : "N/A"})`
-          )
-          .join(" | ")
-        : "—"
-  }
-
+            .map(
+              (r) =>
+                `${r.text} (${
+                  r.time ? dayjs(r.time).format("DD MMM, h:mm A") : "N/A"
+                })`
+            )
+            .join(" | ")
+        : "—",
+  },
 ];
 
 const UserProgressPage = () => {
@@ -57,7 +65,7 @@ const UserProgressPage = () => {
     const fetchUsers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
-        const userList = querySnapshot.docs.map(doc => doc.data().email);
+        const userList = querySnapshot.docs.map((doc) => doc.data().email);
         setUsers(userList);
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -71,7 +79,7 @@ const UserProgressPage = () => {
   }, [dispatch]);
 
   const tasks = selectedUser
-    ? allTasks.filter(task => task.assignee === selectedUser)
+    ? allTasks.filter((task) => task.assignee === selectedUser)
     : [];
 
   const filteredTasks = filterTasks({
@@ -83,17 +91,21 @@ const UserProgressPage = () => {
   });
 
   const total = filteredTasks.length;
-  const pending = filteredTasks.filter(task => task.status === "Pending").length;
-  const completed = filteredTasks.filter(task => task.status === "Completed").length;
+  const pending = filteredTasks.filter(
+    (task) => task.status === "Pending"
+  ).length;
+  const completed = filteredTasks.filter(
+    (task) => task.status === "Completed"
+  ).length;
 
   const handleDownloadExcel = () => {
-    const dataForExcel = filteredTasks.map(task => {
+    const dataForExcel = filteredTasks.map((task) => {
       const row = {};
-      columns.forEach(col => {
+      columns.forEach((col) => {
         row[col.header] = col.render
-          ? (typeof col.render(task[col.key]) === "string"
+          ? typeof col.render(task[col.key]) === "string"
             ? col.render(task[col.key])
-            : "") // Skip complex JSX for Excel
+            : "" // Skip complex JSX for Excel
           : task[col.key] ?? "";
       });
       return row;
@@ -109,8 +121,7 @@ const UserProgressPage = () => {
     });
 
     const blob = new Blob([excelBuffer], {
-      type:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
 
     saveAs(blob, `${selectedUser}_tasks.xlsx`);
@@ -119,18 +130,22 @@ const UserProgressPage = () => {
   return (
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-white rounded shadow">
       <div className="flex justify-center">
-        <h2 className="text-4xl font-bold text-indigo-600 mb-6">📊 User Progress</h2>
+        <h2 className="text-4xl font-bold text-indigo-600 mb-6">
+          📊 User Progress
+        </h2>
       </div>
 
       <div className="mb-6 max-w-sm">
-        <label className="block mb-2 font-semibold text-indigo-600">Select User:</label>
+        <label className="block mb-2 font-semibold text-indigo-600">
+          Select User:
+        </label>
         <select
           value={selectedUser}
           onChange={(e) => setSelectedUser(e.target.value)}
           className="w-full border rounded px-3 py-2"
         >
           <option value="">-- Select a user --</option>
-          {users.map(email => (
+          {users.map((email) => (
             <option key={email} value={email}>
               {email}
             </option>
@@ -141,7 +156,9 @@ const UserProgressPage = () => {
       {selectedUser && (
         <>
           <div className="mb-6 max-w-sm">
-            <label className="block mb-2 font-semibold text-indigo-600">Filter by Status:</label>
+            <label className="block mb-2 font-semibold text-indigo-600">
+              Filter by Status:
+            </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -160,7 +177,11 @@ const UserProgressPage = () => {
               onClick={handleDownloadExcel}
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
               disabled={filteredTasks.length === 0}
-              title={filteredTasks.length === 0 ? "No data to download" : "Download Excel"}
+              title={
+                filteredTasks.length === 0
+                  ? "No data to download"
+                  : "Download Excel"
+              }
             >
               Download Excel
             </button>
@@ -171,7 +192,7 @@ const UserProgressPage = () => {
               <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
                 <thead className="bg-indigo-600">
                   <tr>
-                    {columns.map(col => (
+                    {columns.map((col) => (
                       <th
                         key={col.key}
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-white"
@@ -182,9 +203,12 @@ const UserProgressPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredTasks.map(task => (
-                    <tr key={task.firebaseId} className="hover:bg-gray-50 align-top">
-                      {columns.map(col => (
+                  {filteredTasks.map((task) => (
+                    <tr
+                      key={task.firebaseId}
+                      className="hover:bg-gray-50 align-top"
+                    >
+                      {columns.map((col) => (
                         <td
                           key={col.key}
                           className="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
@@ -200,7 +224,9 @@ const UserProgressPage = () => {
               </table>
             </div>
           ) : (
-            <p className="text-gray-500 mt-6 text-center">No tasks found for this user.</p>
+            <p className="text-gray-500 mt-6 text-center">
+              No tasks found for this user.
+            </p>
           )}
         </>
       )}

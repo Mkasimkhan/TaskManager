@@ -136,6 +136,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
       ),
     },
     { label: "Priority", key: "priority" },
+    { label: "Assignor", key: "assignor" },
     { label: "Assignee", key: "assignee" },
     { label: "Type", key: "type" },
     {

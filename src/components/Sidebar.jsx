@@ -62,7 +62,8 @@ const Sidebar = () => {
               { to: "/app/healthcheckupTask", label: "Health Check Up Task", icon: <GrInProgress /> },
               { to: "/app/complaintTask", label: "Complaint Tasks", icon: <MdCloudDone /> },
               { to: "/app/securitybriefingTask", label: "Security Briefing Tasks", icon: <MdCloudDone /> },
-              { to: "/app/statsTask", label: "Task Stats", icon: <MdQueryStats /> }
+              { to: "/app/statsTask", label: "Task Stats", icon: <MdQueryStats /> },
+              { to: "/app/addTask", label: "Add New Tasks", icon: <MdAddTask /> }
             ].map((item, index) => (
               <Link key={index} to={item.to}>
                 <span className="icon">{item.icon}</span>
@@ -72,10 +73,10 @@ const Sidebar = () => {
 
             {userRole === "admin" && (
               <>
-                <Link to="/app/addTask">
+                {/* <Link to="/app/addTask">
                   <span className="icon"><MdAddTask /></span>
                   <span className="label">Add New Tasks</span>
-                </Link>
+                </Link> */}
                 <Link to="/app/user-management">
                   <span className="icon"><MdPeople /></span>
                   <span className="label">User Management</span>

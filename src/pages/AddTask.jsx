@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
+import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { db } from "../firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const AddTask = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
+    assignor: "",
     startDate: new Date(),
     endDate: null,
-    status: 'Pending',
-    assignee: '',
-    priority: 'Low',
-    type: '',
+    status: "Pending",
+    assignee: "",
+    priority: "Low",
+    type: "",
     remarks: [],
-    lastUpdatedOn: '',
-    completedDate: ''
+    lastUpdatedOn: "",
+    completedDate: "",
   });
 
   const [userEmails, setUserEmails] = useState([]);
-
+  const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const usersSnapshot = await getDocs(collection(db, "users"));
-        const emails = usersSnapshot.docs.map(doc => doc.data().email);
+        const emails = usersSnapshot.docs.map((doc) => doc.data().email);
         setUserEmails(emails);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -41,7 +41,7 @@ const AddTask = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -58,9 +58,26 @@ const AddTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, description, startDate, endDate, status, assignee, priority, type } = formData;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      status,
+      assignee,
+      priority,
+      type,
+    } = formData;
 
-    if (!title || !description || !startDate || !status || !assignee || !priority || !type) {
+    if (
+      !title ||
+      !description ||
+      !startDate ||
+      !status ||
+      !assignee ||
+      !priority ||
+      !type
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -70,22 +87,26 @@ const AddTask = () => {
       startDate: startDate.toISOString(),
       endDate: endDate ? endDate.toISOString() : null,
       remarks: [],
-      completedDate: '',
+      completedDate: "",
+      assignor: storedUser.email,
     };
 
     try {
       await addDoc(collection(db, "tasks"), serializableFormData);
       alert("Task added successfully!");
       setFormData({
-        title: '',
-        description: '',
+        title: "",
+        description: "",
+        assignor: "",
         startDate: new Date(),
         endDate: null,
-        status: 'Pending',
-        assignee: '',
-        priority: 'Low',
-        type: '',
+        status: "Pending",
+        assignee: "",
+        priority: "Low",
+        type: "",
         remarks: [],
+        lastUpdatedOn: "",
+        completedDate: "",
       });
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -98,10 +119,11 @@ const AddTask = () => {
       <h1 className="text-3xl font-bold mt-4 mb-4 text-center">Add New Task</h1>
       <div className="grid place-items-center">
         <form className="w-full max-w-lg" onSubmit={handleSubmit}>
-
           {/* Title */}
           <div className="mb-6">
-            <label className="block text-gray-700 text-xs font-bold mb-2">Title</label>
+            <label className="block text-gray-700 text-xs font-bold mb-2">
+              Title
+            </label>
             <input
               type="text"
               name="title"
@@ -115,7 +137,9 @@ const AddTask = () => {
 
           {/* Description */}
           <div className="mb-6">
-            <label className="block text-gray-700 text-xs font-bold mb-2">Description</label>
+            <label className="block text-gray-700 text-xs font-bold mb-2">
+              Description
+            </label>
             <textarea
               name="description"
               placeholder="Task Description"
@@ -128,7 +152,9 @@ const AddTask = () => {
           {/* Start and End Dates */}
           <div className="flex gap-4 mb-6">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-xs font-bold mb-2">Start Date</label>
+              <label className="block text-gray-700 text-xs font-bold mb-2">
+                Start Date
+              </label>
               <DatePicker
                 selected={formData.startDate}
                 onChange={handleStartDateChange}
@@ -137,7 +163,9 @@ const AddTask = () => {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-xs font-bold mb-2">Due Date</label>
+              <label className="block text-gray-700 text-xs font-bold mb-2">
+                Due Date
+              </label>
               <DatePicker
                 selected={formData.endDate}
                 onChange={handleEndDateChange}
@@ -150,7 +178,9 @@ const AddTask = () => {
           {/* Status and Priority */}
           <div className="flex gap-4 mb-6">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-xs font-bold mb-2">Status</label>
+              <label className="block text-gray-700 text-xs font-bold mb-2">
+                Status
+              </label>
               <select
                 name="status"
                 value={formData.status}
@@ -162,7 +192,9 @@ const AddTask = () => {
               </select>
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-xs font-bold mb-2">Priority</label>
+              <label className="block text-gray-700 text-xs font-bold mb-2">
+                Priority
+              </label>
               <select
                 name="priority"
                 value={formData.priority}
@@ -178,7 +210,9 @@ const AddTask = () => {
 
           {/* Task Type */}
           <div className="mb-6">
-            <label className="block text-gray-700 text-xs font-bold mb-2">Task Type</label>
+            <label className="block text-gray-700 text-xs font-bold mb-2">
+              Task Type
+            </label>
             <select
               name="type"
               value={formData.type}
@@ -196,7 +230,9 @@ const AddTask = () => {
 
           {/* Assignee Dropdown */}
           <div className="mb-6">
-            <label className="block text-gray-700 text-xs font-bold mb-2">Assignee</label>
+            <label className="block text-gray-700 text-xs font-bold mb-2">
+              Assignee
+            </label>
             <select
               name="assignee"
               value={formData.assignee}

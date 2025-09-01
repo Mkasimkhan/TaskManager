@@ -23,7 +23,6 @@ import {
 } from "../store/taskSlice";
 import "../styles/Dashboard.css";
 
-
 Chart.register(
     CategoryScale,
     LinearScale,
@@ -40,7 +39,6 @@ Chart.register(
     Legend,
     Filler
 );
-
 
 const TrendingUp = ({ className }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +78,7 @@ const ALL_TASK_TYPES = [
     "Security Briefing",
 ];
 
-const COLORS = ['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6'];
+const COLORS = ['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
 
 const KPICard = ({ title, value, icon, color, trend }) => (
     <div className="bg-white rounded-xl shadow-lg p-3 flex items-center space-x-3 transform transition-transform hover:scale-105 h-30" style={{ height: "120px" }}>
@@ -88,7 +86,6 @@ const KPICard = ({ title, value, icon, color, trend }) => (
         <div>
             <h3 className="text-md font-medium text-gray-600">{title}</h3>
             <p className="text-lg font-bold text-gray-800">{value}</p>
-            {/* <p className={`text-xs ${trend.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>{trend}</p> */}
         </div>
     </div>
 );
@@ -135,6 +132,7 @@ const Dashboard = () => {
     const totalTasks = currentUserTasks.length;
     const completedTasks = currentUserTasks.filter(t => t.status === "Completed").length;
     const pendingTasks = currentUserTasks.filter(t => t.status === "Pending").length;
+    const inProgressTasks = currentUserTasks.filter(t => t.status === "InProgress").length;
     const completionRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) : 0;
 
     // Calculate trends
@@ -160,6 +158,10 @@ const Dashboard = () => {
         tasksLast7Days.filter(t => t.status === "Pending").length,
         tasksPrev7Days.filter(t => t.status === "Pending").length
     );
+    const inProgressTasksTrend = calculateTrend(
+        tasksLast7Days.filter(t => t.status === "InProgress").length,
+        tasksPrev7Days.filter(t => t.status === "InProgress").length
+    );
     const completionRateLast7Days = tasksLast7Days.length > 0
         ? (tasksLast7Days.filter(t => t.status === "Completed").length / tasksLast7Days.length * 100).toFixed(1)
         : 0;
@@ -171,7 +173,8 @@ const Dashboard = () => {
     const taskTypeData = ALL_TASK_TYPES.map(type => {
         const completed = currentUserTasks.filter(t => t.type === type && t.status === "Completed").length;
         const pending = currentUserTasks.filter(t => t.type === type && t.status === "Pending").length;
-        return { type, completed, pending, total: completed + pending };
+        const inProgress = currentUserTasks.filter(t => t.type === type && t.status === "InProgress").length;
+        return { type, completed, pending, inProgress, total: completed + pending + inProgress };
     });
 
     useEffect(() => {
@@ -214,6 +217,16 @@ const Dashboard = () => {
                                 : taskTypeData.map(item => item.pending),
                             backgroundColor: 'rgba(249, 115, 22, 0.8)',
                             borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'In Progress',
+                            data: selectedType
+                                ? [taskTypeData.find(item => item.type === selectedType)?.inProgress || 0]
+                                : taskTypeData.map(item => item.inProgress),
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
                             borderWidth: 1,
                             borderRadius: 4
                         }
@@ -280,7 +293,7 @@ const Dashboard = () => {
                             borderColor: '#bfdbfe',
                             borderWidth: 1
                         }
-                    },
+                    }
                 }
             });
         }
@@ -293,7 +306,8 @@ const Dashboard = () => {
                 return {
                     user: userEmail.split('@')[0],
                     completed: userTasks.filter(t => t.status === "Completed").length,
-                    pending: userTasks.filter(t => t.status === "Pending").length
+                    pending: userTasks.filter(t => t.status === "Pending").length,
+                    inProgress: userTasks.filter(t => t.status === "InProgress").length
                 };
             });
 
@@ -314,6 +328,13 @@ const Dashboard = () => {
                             data: userPerformanceData.map(item => item.pending),
                             backgroundColor: 'rgba(249, 115, 22, 0.8)',
                             borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'In Progress',
+                            data: userPerformanceData.map(item => item.inProgress),
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
                             borderWidth: 1
                         }
                     ]
@@ -415,7 +436,8 @@ const Dashboard = () => {
             const userData = (selectedType ? [selectedType] : ALL_TASK_TYPES).map(type => ({
                 type,
                 completed: userTasks.filter(t => t.type === type && t.status === "Completed").length,
-                pending: userTasks.filter(t => t.type === type && t.status === "Pending").length
+                pending: userTasks.filter(t => t.type === type && t.status === "Pending").length,
+                inProgress: userTasks.filter(t => t.type === type && t.status === "InProgress").length
             }));
 
             modalChartRef.current = new Chart(ctx, {
@@ -436,6 +458,14 @@ const Dashboard = () => {
                             data: userData.map(item => item.pending),
                             backgroundColor: 'rgba(249, 115, 22, 0.8)',
                             borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'In Progress',
+                            data: userData.map(item => item.inProgress),
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
                             borderWidth: 1,
                             borderRadius: 4
                         }
@@ -552,6 +582,7 @@ const Dashboard = () => {
                     <KPICard title="Total Tasks" value={totalTasks} icon={<AlertCircle className="icon" />} color="bg-blue" trend={totalTasksTrend} />
                     <KPICard title="Completed" value={completedTasks} icon={<CheckCircle className="icon" />} color="bg-green" trend={completedTasksTrend} />
                     <KPICard title="Pending" value={pendingTasks} icon={<Clock className="icon" />} color="bg-amber" trend={pendingTasksTrend} />
+                    <KPICard title="In Progress" value={inProgressTasks} icon={<Clock className="icon" />} color="bg-red" trend={inProgressTasksTrend} />
                     <KPICard title="Completion Rate" value={`${completionRate}%`} icon={<TrendingUp className="icon" />} color="bg-purple" trend={completionRateTrend} />
                 </div>
 
@@ -610,6 +641,7 @@ const Dashboard = () => {
                         <div className="modal-info">
                             <div><Users className="info-icon" /> <span>{currentUserTasks.filter((t) => t.assignee === selectedUser).length} tasks</span></div>
                             <div><CheckCircle className="info-icon completed" /> <span>{currentUserTasks.filter((t) => t.assignee === selectedUser && t.status === "Completed").length} completed</span></div>
+                            <div><Clock className="info-icon in-progress" /> <span>{currentUserTasks.filter((t) => t.assignee === selectedUser && t.status === "InProgress").length} in progress</span></div>
                         </div>
                         <div className="modal-chart">
                             <canvas ref={modalCanvasRef}></canvas>
@@ -618,7 +650,6 @@ const Dashboard = () => {
                 </div>
             )}
         </div>
-
     );
 };
 

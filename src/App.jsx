@@ -13,6 +13,7 @@ import SecurityBriefingTasks from './pages/SecurityBriefingTasks';
 import UserProgressPage from './pages/UserprogressPage';
 import AddUserPage from './pages/AddUserPage';
 import ComplaintTasksPage from './pages/ComplainTasksPage';
+import CreatedTasks from './pages/CreatedTasks';
 
 const router = createBrowserRouter([
   { path: '/', element: <Login /> },
@@ -33,22 +34,9 @@ const router = createBrowserRouter([
       { path: 'healthcheckupTask', element: <HealthCheckUpTask /> },
       { path: 'securitybriefingTask', element: <SecurityBriefingTasks /> },
       { path: 'statsTask', element: <Dashboard /> },
-      {
-        path: 'user-management',
-        element: (
-          <ProtectedRoute requiredRole="admin">
-            <UserManagement />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'user-progress',
-        element: (
-          <ProtectedRoute requiredRole="admin">
-            <UserProgressPage />
-          </ProtectedRoute>
-        ),
-      },
+      { path: 'createdTasks', element: <CreatedTasks /> },
+      { path: 'user-progress', element: <UserProgressPage /> },
+      { path: 'user-management', element: <UserManagement /> },
       {
         path: 'add-user',
         element: (

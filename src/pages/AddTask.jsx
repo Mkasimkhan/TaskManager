@@ -22,6 +22,8 @@ const AddTask = () => {
   });
 
   const [userEmails, setUserEmails] = useState([]);
+  const [installationType, setInstallationType] = useState(""); // <-- NEW
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -43,6 +45,11 @@ const AddTask = () => {
       ...formData,
       [name]: value,
     });
+
+    // Reset installation type when changing task type
+    if (name === "type" && value !== "Installation") {
+      setInstallationType("");
+    }
   };
 
   const handleStartDateChange = (date) => {
@@ -92,8 +99,22 @@ const AddTask = () => {
     };
 
     try {
+      // 1. Create the main task
       await addDoc(collection(db, "tasks"), serializableFormData);
-      alert("Task added successfully!");
+
+      // 2. If Installation + New Installation → also create Security Briefing
+      if (type === "Installation" && installationType === "new") {
+        const securityBriefingTask = {
+          ...serializableFormData,
+          type: "Security Briefing",
+          title: "Security Briefing - " + title,
+          description: "Auto-generated security briefing task",
+          assignee: "areebops@gotrack.ae",
+        };
+        await addDoc(collection(db, "tasks"), securityBriefingTask);
+      }
+
+      alert("Task(s) added successfully!");
       setFormData({
         title: "",
         description: "",
@@ -108,6 +129,7 @@ const AddTask = () => {
         lastUpdatedOn: "",
         completedDate: "",
       });
+      setInstallationType("");
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Failed to add task. " + error.message);
@@ -188,6 +210,7 @@ const AddTask = () => {
                 className="w-full p-3 rounded bg-gray-200 border focus:outline-none"
               >
                 <option value="Pending">Pending</option>
+                <option value="InProgress">In Progress</option>
                 <option value="Completed">Completed</option>
               </select>
             </div>
@@ -227,6 +250,37 @@ const AddTask = () => {
               <option value="Security Briefing">Security Briefing</option>
             </select>
           </div>
+
+          {/* Installation Checkboxes */}
+          {formData.type === "Installation" && (
+            <div className="mb-6">
+              <label className="block text-gray-700 text-xs font-bold mb-2">
+                Installation Type
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="installationType"
+                    value="existing"
+                    checked={installationType === "existing"}
+                    onChange={(e) => setInstallationType(e.target.value)}
+                  />
+                  Existing Installation
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="installationType"
+                    value="new"
+                    checked={installationType === "new"}
+                    onChange={(e) => setInstallationType(e.target.value)}
+                  />
+                  New Installation
+                </label>
+              </div>
+            </div>
+          )}
 
           {/* Assignee Dropdown */}
           <div className="mb-6">

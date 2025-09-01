@@ -61,22 +61,50 @@ const UserProgressPage = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const querySnapshot = await getDocs(collection(db, "users"));
+  //       const userList = querySnapshot.docs.map((doc) => doc.data().email);
+  //       setUsers(userList);
+  //     } catch (error) {
+  //       console.error("Failed to fetch users:", error);
+  //     }
+  //   };
+  //   fetchUsers();
+  // }, []);
+
+  // useEffect(() => {
+  //   dispatch(fetchTasksFromFirebase({ role: "admin" }));
+  // }, [dispatch]);
+
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
         const userList = querySnapshot.docs.map((doc) => doc.data().email);
-        setUsers(userList);
+
+        if (currentUser?.role === "user") {
+          // user can only see themselves
+          setUsers([currentUser.email]);
+          setSelectedUser(currentUser.email); // preselect their email
+        } else {
+          // admin sees all
+          setUsers(userList);
+        }
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
     };
     fetchUsers();
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
-    dispatch(fetchTasksFromFirebase({ role: "admin" }));
-  }, [dispatch]);
+    dispatch(fetchTasksFromFirebase({ role: currentUser?.role }));
+  }, [dispatch, currentUser]);
+
 
   const tasks = selectedUser
     ? allTasks.filter((task) => task.assignee === selectedUser)
@@ -93,6 +121,9 @@ const UserProgressPage = () => {
   const total = filteredTasks.length;
   const pending = filteredTasks.filter(
     (task) => task.status === "Pending"
+  ).length;
+  const inProgress = filteredTasks.filter(
+    (task) => task.status === "InProgress"
   ).length;
   const completed = filteredTasks.filter(
     (task) => task.status === "Completed"
@@ -166,11 +197,12 @@ const UserProgressPage = () => {
             >
               <option value="All">All</option>
               <option value="Pending">Pending</option>
+              <option value="InProgress">In Progress</option>
               <option value="Completed">Completed</option>
             </select>
           </div>
 
-          <TaskStats total={total} pending={pending} completed={completed} />
+          <TaskStats total={total} pending={pending} inProgress={inProgress} completed={completed} />
 
           <div className="flex justify-end mb-4">
             <button

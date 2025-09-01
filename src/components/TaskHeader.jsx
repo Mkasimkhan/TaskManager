@@ -63,6 +63,7 @@ const TaskHeader = ({
                         >
                             <option value="All">All Status</option>
                             <option value="Pending">Pending</option>
+                            <option value="InProgress">In Progress</option>
                             <option value="Completed">Completed</option>
                         </select>
 

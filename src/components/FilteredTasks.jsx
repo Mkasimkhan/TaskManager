@@ -92,6 +92,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
 
   const total = filteredTasks.length;
   const pending = filteredTasks.filter((task) => task.status === "Pending").length;
+  const inProgress = filteredTasks.filter((task) => task.status === "InProgress").length;
   const completed = filteredTasks.filter((task) => task.status === "Completed").length;
 
   const handlePageChange = (newPage) => {
@@ -160,6 +161,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
         total={total}
         pending={pending}
         completed={completed}
+        inProgress={inProgress}
         onStatusClick={(status) => {
           setStatusCardFilter(status);
           setCurrentPage(1);
@@ -245,7 +247,9 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                       {columns.map((col) => (
                         <th key={col.key}>{col.label}</th>
                       ))}
+                      {taskType !== "Created" && (
                       <th>Update</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -256,28 +260,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                             {col.render ? col.render(task[col.key]) : task[col.key]}
                           </td>
                         ))}
-                        <td>
-                          {/* <button
-                            style={{
-                              backgroundColor:
-                                task.status === "Pending"
-                                  ? "#facc15"
-                                  : task.status === "Completed"
-                                    ? "#22c55e"
-                                    : "#3b82f6",
-                              color: "white",
-                              padding: "6px 12px",
-                              border: "none",
-                              borderRadius: "6px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              setEditingTask(task);
-                              setNewRemark("");
-                            }}
-                          >
-                            Update
-                          </button> */}
+                        {taskType !== "Created" && ( <td>
                           <button
                             disabled={task.status === "Completed" && user?.role === "user"}
                             style={{
@@ -309,9 +292,8 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                           >
                             Update
                           </button>
-
-
-                        </td>
+                        </td>)}
+                       
                       </tr>
                     ))}
                   </tbody>
@@ -358,6 +340,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                 }
               >
                 <option value="Pending">Pending</option>
+                <option value="InProgress">In Progress</option>
                 <option value="Completed">Completed</option>
               </select>
 

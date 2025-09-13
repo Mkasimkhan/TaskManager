@@ -112,15 +112,55 @@ import {
 import { db } from "../firebase";
 
 // ✅ Async thunk to fetch tasks from Firestore
+// export const fetchTasksFromFirebase = createAsyncThunk(
+//   "tasks/fetchFromFirebase",
+//   async ({ role, email, type }, thunkAPI) => {
+//     try {
+//       const tasksRef = collection(db, "tasks");
+//       // const q =
+//       //   role === "admin
+//       //     ? tasksRef
+//       //     : query(tasksRef, where("assignee", "==", email));
+//       let q;
+//       if (type === "Created"){
+//         q = query(tasksRef, where("assignor", "==", email));
+//       }
+//       if (role === "admin" & type !== "Created") {
+//         q = tasksRef;
+//       }
+//       if (role === "user" & type !== "Created") {
+//         q = query(tasksRef, where("assignee", "==", email));
+//       }
+
+//       // const q = query(tasksRef, where("assignee", "==", email));
+//       const snapshot = await getDocs(q);
+//       return snapshot.docs.map((doc) => ({
+//         ...doc.data(),
+//         firebaseId: doc.id,
+//       }));
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   }
+// );
 export const fetchTasksFromFirebase = createAsyncThunk(
   "tasks/fetchFromFirebase",
-  async ({ role, email }, thunkAPI) => {
+  async ({ role, email, type }, thunkAPI) => {
     try {
       const tasksRef = collection(db, "tasks");
-      const q =
-        role === "admin"
-          ? tasksRef
-          : query(tasksRef, where("assignee", "==", email));
+      let q;
+
+      if (type === "Created") {
+        // ✅ Fetch tasks where current user is assignor
+        q = query(tasksRef, where("assignor", "==", email));
+      } else if (role === "admin") {
+        // ✅ Admin sees all tasks
+        q = tasksRef; // CollectionRef works directly in getDocs
+      } else {
+        // ✅ User sees only tasks assigned to them
+        q = query(tasksRef, where("assignee", "==", email));
+      }
+
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => ({
         ...doc.data(),

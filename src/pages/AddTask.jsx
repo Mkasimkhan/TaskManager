@@ -144,7 +144,7 @@ const AddTask = () => {
           {/* Title */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">
-              Title
+              Client Name
             </label>
             <input
               type="text"
@@ -255,7 +255,7 @@ const AddTask = () => {
           {formData.type === "Installation" && (
             <div className="mb-6">
               <label className="block text-gray-700 text-xs font-bold mb-2">
-                Installation Type
+                Client Type
               </label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2">
@@ -266,7 +266,7 @@ const AddTask = () => {
                     checked={installationType === "existing"}
                     onChange={(e) => setInstallationType(e.target.value)}
                   />
-                  Existing Installation
+                  Existing Client
                 </label>
                 <label className="flex items-center gap-2">
                   <input
@@ -276,7 +276,7 @@ const AddTask = () => {
                     checked={installationType === "new"}
                     onChange={(e) => setInstallationType(e.target.value)}
                   />
-                  New Installation
+                  New Client
                 </label>
               </div>
             </div>

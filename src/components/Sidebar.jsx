@@ -14,6 +14,7 @@ import {
 import { GrInProgress } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { MdSwapHoriz } from "react-icons/md";
 
 const Sidebar = () => {
   const [userRole, setUserRole] = useState(null);
@@ -56,16 +57,52 @@ const Sidebar = () => {
         <nav>
           <ul>
             {[
-              { to: "/app/allTasks", label: "Dashboard", icon: <MdDashboard /> },
-              { to: "/app/createdTasks", label: "Created Tasks", icon: <MdPendingActions /> },
-              { to: "/app/removalTask", label: "Removal Tasks", icon: <MdOutlineTaskAlt /> },
-              { to: "/app/installationTask", label: "Installation Tasks", icon: <MdPendingActions /> },
-              { to: "/app/healthcheckupTask", label: "Health Check Up Task", icon: <GrInProgress /> },
-              { to: "/app/complaintTask", label: "Complaint Tasks", icon: <MdCloudDone /> },
-              { to: "/app/securitybriefingTask", label: "Security Briefing Tasks", icon: <MdCloudDone /> },
-              { to: "/app/statsTask", label: "Task Stats", icon: <MdQueryStats /> },
-              { to: "/app/addTask", label: "Add New Tasks", icon: <MdAddTask /> },
-              { to: "/app/user-management", label: "User Management", icon: <MdPeople /> }
+              {
+                to: "/app/allTasks",
+                label: "Dashboard",
+                icon: <MdDashboard />,
+              },
+              // { to: "/app/createdTasks", label: "Created Tasks", icon: <MdPendingActions /> },
+              {
+                to: "/app/removalTask",
+                label: "Removal Tasks",
+                icon: <MdOutlineTaskAlt />,
+              },
+              {
+                to: "/app/installationTask",
+                label: "Installation Tasks",
+                icon: <MdPendingActions />,
+              },
+              {
+                to: "/app/healthcheckupTask",
+                label: "Health Check Up Task",
+                icon: <GrInProgress />,
+              },
+              {
+                to: "/app/complaintTask",
+                label: "Complaint Tasks",
+                icon: <MdCloudDone />,
+              },
+              {
+                to: "/app/securitybriefingTask",
+                label: "Security Briefing Tasks",
+                icon: <MdCloudDone />,
+              },
+              {
+                to: "/app/statsTask",
+                label: "Task Stats",
+                icon: <MdQueryStats />,
+              },
+              {
+                to: "/app/addTask",
+                label: "Add New Tasks",
+                icon: <MdAddTask />,
+              },
+              {
+                to: "/app/user-management",
+                label: "User Management",
+                icon: <MdPeople />,
+              },
             ].map((item, index) => (
               <Link key={index} to={item.to}>
                 <span className="icon">{item.icon}</span>
@@ -87,6 +124,10 @@ const Sidebar = () => {
       </div>
 
       <div className="bottom">
+        <div className="item" onClick={() => navigate("/app")}>
+          <MdSwapHoriz  className="icon" />
+          <span className="label">Change Type</span>
+        </div>
         {userEmail && (
           <div className="item">
             <MdEmail className="icon" />

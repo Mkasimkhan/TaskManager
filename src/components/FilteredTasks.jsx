@@ -11,11 +11,13 @@ import { filterTasks } from "./filterTasks";
 import TaskStats from "./TaskStats";
 import dayjs from "dayjs";
 import "../styles/FilteredTasks.css";
+import { useTaskView } from "../context/TaskViewContext";
 
 const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
   const dispatch = useDispatch();
   const tasks = useSelector(selectAllTasks);
   const user = JSON.parse(localStorage.getItem("user"));
+  const { taskView } = useTaskView();
 
   const { statusFilter, priorityFilter } = useOutletContext();
 
@@ -30,11 +32,25 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
   const [filterByExactStartDate, setFilterByExactStartDate] = useState("");
   const [filterByExactEndDate, setFilterByExactEndDate] = useState("");
 
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(fetchTasksFromFirebase({ role: user.role, email: user.email, type: taskType}));
+  //   }
+  // }, [dispatch, user?.role, user?.email]);
+
   useEffect(() => {
     if (user) {
-      dispatch(fetchTasksFromFirebase({ role: user.role, email: user.email }));
+      const typeToFetch = taskView === "Created" ? "Created" : "Received";
+
+      dispatch(
+        fetchTasksFromFirebase({
+          role: user.role,
+          email: user.email,
+          type: typeToFetch,
+        })
+      );
     }
-  }, [dispatch, user?.role, user?.email]);
+  }, [dispatch, user?.role, user?.email, taskView]); // <-- run whenever taskView changes
 
   const filteredTasks = filterTasks({
     tasks,
@@ -44,6 +60,8 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
     filterByExactStartDate,
     filterByExactEndDate,
   });
+
+  
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -251,7 +269,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
 
   return (
     <div className="filtered-tasks-container">
-      <h1 className="heading">{title}</h1>
+      <h1 className="heading">{title}({taskView})</h1>
 
       <TaskStats
         total={total}

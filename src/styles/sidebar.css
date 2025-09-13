@@ -36,7 +36,7 @@
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0rem;
 }
 
 .sidebar nav a {
@@ -62,17 +62,17 @@
 }
 
 .sidebar.expanded nav a {
-  font-size: 1rem;
+  font-size: 0.95rem;
   padding: 0.75rem 1.5rem;
 }
 
 .sidebar.expanded nav a .icon {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 .sidebar .bottom {
   padding: 0 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-size: 0.75rem;
   color: #d1d5db;
 }
@@ -82,11 +82,12 @@
   padding: 0 1.5rem;
 }
 
+
 .sidebar .bottom .item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0;
+  padding: 0.4rem 0;
   cursor: pointer;
   transition: color 0.2s ease;
 }

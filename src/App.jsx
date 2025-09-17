@@ -74,6 +74,7 @@ import AddUserPage from "./pages/AddUserPage";
 import ComplaintTasksPage from "./pages/ComplainTasksPage";
 import TaskSelectionPage from "./pages/TaskSelectionPage"; // NEW
 import { TaskViewProvider } from "./context/TaskViewContext";
+import OthersTasks from "./pages/OthersPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -88,6 +89,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <TaskSelectionPage /> }, // Show task selection immediately after login
       { path: "allTasks", element: <AllTasks /> },
+      { path: "otherTasks", element: <OthersTasks /> },
       { path: "addTask", element: <AddTask /> },
       { path: "removalTask", element: <RemovalTask /> },
       { path: "installationTask", element: <InstallationTask /> },

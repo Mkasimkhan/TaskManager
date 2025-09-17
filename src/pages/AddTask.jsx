@@ -248,6 +248,7 @@ const AddTask = () => {
               <option value="Health CheckUp">Health CheckUp</option>
               <option value="Complaint">Complaint</option>
               <option value="Security Briefing">Security Briefing</option>
+              <option value="Others">Others</option>
             </select>
           </div>
 

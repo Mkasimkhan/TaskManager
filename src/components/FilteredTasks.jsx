@@ -12,6 +12,8 @@ import TaskStats from "./TaskStats";
 import dayjs from "dayjs";
 import "../styles/FilteredTasks.css";
 import { useTaskView } from "../context/TaskViewContext";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
   const dispatch = useDispatch();
@@ -22,6 +24,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
   const { statusFilter, priorityFilter } = useOutletContext();
 
   const [showTasks, setShowTasks] = useState(true);
+  const [Users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -32,11 +35,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
   const [filterByExactStartDate, setFilterByExactStartDate] = useState("");
   const [filterByExactEndDate, setFilterByExactEndDate] = useState("");
 
-  // useEffect(() => {
-  //   if (user) {
-  //     dispatch(fetchTasksFromFirebase({ role: user.role, email: user.email, type: taskType}));
-  //   }
-  // }, [dispatch, user?.role, user?.email]);
+
 
   useEffect(() => {
     if (user) {
@@ -50,7 +49,10 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
         })
       );
     }
-  }, [dispatch, user?.role, user?.email, taskView]); // <-- run whenever taskView changes
+  }, [dispatch, user?.role, user?.email, taskView]);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const filteredTasks = filterTasks({
     tasks,
@@ -61,7 +63,19 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
     filterByExactEndDate,
   });
 
-  
+  const fetchUsers = async () => {
+    try {
+      const usersCol = collection(db, "users");
+      const snapshot = await getDocs(usersCol);
+      const userList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(userList);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -269,7 +283,9 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
 
   return (
     <div className="filtered-tasks-container">
-      <h1 className="heading">{title}({taskView})</h1>
+      <h1 className="heading">
+        {title}({taskView})
+      </h1>
 
       <TaskStats
         total={total}
@@ -365,7 +381,9 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                         <th key={col.key}>{col.label}</th>
                       ))}
                       {taskType !== "Created" && <th>Update</th>}
-                      {taskType !== "Created" && user?.role === "admin" && <th>Actions</th>}
+                      {taskType !== "Created" && user?.role === "admin" && (
+                        <th>Actions</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -661,7 +679,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Assignee (email):
                 </label>
@@ -677,6 +695,30 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   aria-label="Task assignee email"
                 />
+              </div> */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Assignee:
+                </label>
+                <select
+                  value={fullEditingTask.assignee || ""}
+                  onChange={(e) =>
+                    setFullEditingTask({
+                      ...fullEditingTask,
+                      assignee: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm 
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  aria-label="Task assignee"
+                >
+                  <option value="">Select Assignee</option>
+                  {Users.map((u) => (
+                    <option key={u.id} value={u.email}>
+                      {u.name ? `${u.name} (${u.email})` : u.email}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -700,6 +742,7 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                   <option value="Health CheckUp">Health CheckUp</option>
                   <option value="Complaint">Complaint</option>
                   <option value="Security Briefing">Security Briefing</option>
+                  <option value="Others">Others</option>
                 </select>
               </div>
 

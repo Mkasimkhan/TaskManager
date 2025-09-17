@@ -89,6 +89,11 @@ const Sidebar = () => {
                 icon: <MdCloudDone />,
               },
               {
+                to: "/app/otherTasks",
+                label: "Other Tasks",
+                icon: <MdCloudDone />,
+              },
+              {
                 to: "/app/statsTask",
                 label: "Task Stats",
                 icon: <MdQueryStats />,

@@ -75,6 +75,7 @@ import ComplaintTasksPage from "./pages/ComplainTasksPage";
 import TaskSelectionPage from "./pages/TaskSelectionPage"; // NEW
 import { TaskViewProvider } from "./context/TaskViewContext";
 import OthersTasks from "./pages/OthersPage";
+import DevTasks from "./pages/DevTasks";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -104,6 +105,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute requiredRole="admin">
             <AddUserPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "devTasks",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <DevTasks />
           </ProtectedRoute>
         ),
       },

@@ -377,10 +377,11 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                 <table className="custom-task-table">
                   <thead>
                     <tr>
+                      {taskType !== "Created" && <th>Update</th>}
                       {columns.map((col) => (
                         <th key={col.key}>{col.label}</th>
                       ))}
-                      {taskType !== "Created" && <th>Update</th>}
+                      {/* {taskType !== "Created" && <th>Update</th>} */}
                       {taskType !== "Created" && user?.role === "admin" && (
                         <th>Actions</th>
                       )}
@@ -389,13 +390,6 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                   <tbody>
                     {paginatedTasks.map((task, index) => (
                       <tr key={task.firebaseId || task.id || index}>
-                        {columns.map((col) => (
-                          <td key={col.key}>
-                            {col.render
-                              ? col.render(task[col.key])
-                              : task[col.key]}
-                          </td>
-                        ))}
                         {taskType !== "Created" && (
                           <td>
                             <button
@@ -441,6 +435,58 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                             </button>
                           </td>
                         )}
+                        {columns.map((col) => (
+                          <td key={col.key}>
+                            {col.render
+                              ? col.render(task[col.key])
+                              : task[col.key]}
+                          </td>
+                        ))}
+                        {/* {taskType !== "Created" && (
+                          <td>
+                            <button
+                              disabled={
+                                task.status === "Completed" &&
+                                user?.role === "user"
+                              }
+                              style={{
+                                backgroundColor:
+                                  task.status === "Pending"
+                                    ? "#facc15"
+                                    : task.status === "Completed"
+                                    ? "#22c55e"
+                                    : "#3b82f6",
+                                color: "white",
+                                padding: "6px 12px",
+                                border: "none",
+                                borderRadius: "6px",
+                                cursor:
+                                  task.status === "Completed" &&
+                                  user?.role === "user"
+                                    ? "not-allowed"
+                                    : "pointer",
+                                opacity:
+                                  task.status === "Completed" &&
+                                  user?.role === "user"
+                                    ? 0.6
+                                    : 1,
+                              }}
+                              onClick={() => {
+                                if (
+                                  !(
+                                    task.status === "Completed" &&
+                                    user?.role === "user"
+                                  )
+                                ) {
+                                  setEditingTask(task);
+                                  setNewRemark("");
+                                }
+                              }}
+                            >
+                              Update
+                            </button>
+                          </td>
+                        )} */}
                         {taskType !== "Created" && user?.role === "admin" && (
                           <td>
                             <div className="flex gap-2">

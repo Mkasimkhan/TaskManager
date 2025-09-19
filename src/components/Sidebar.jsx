@@ -10,6 +10,10 @@ import {
   MdPeople,
   MdOutlineAccessTimeFilled,
   MdEmail,
+  MdCode,
+  MdReportProblem,
+  MdSecurity,
+  MdAssignment,
 } from "react-icons/md";
 import { GrInProgress } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
@@ -81,17 +85,17 @@ const Sidebar = () => {
               {
                 to: "/app/complaintTask",
                 label: "Complaint Tasks",
-                icon: <MdCloudDone />,
+                icon: <MdReportProblem />,
               },
               {
                 to: "/app/securitybriefingTask",
                 label: "Security Briefing Tasks",
-                icon: <MdCloudDone />,
+                icon: <MdSecurity />,
               },
               {
                 to: "/app/otherTasks",
                 label: "Other Tasks",
-                icon: <MdCloudDone />,
+                icon: <MdAssignment />,
               },
               {
                 to: "/app/statsTask",
@@ -115,32 +119,32 @@ const Sidebar = () => {
               </Link>
             ))}
 
-            {/* {userRole === "admin" && (
+            {userRole === "admin" && (
               <>
                 
-                <Link to="/app/user-management">
-                  <span className="icon"><MdPeople /></span>
-                  <span className="label">User Management</span>
+                <Link to="/app/devTasks">
+                  <span className="icon"><MdCode /></span>
+                  <span className="label">Development Tasks</span>
                 </Link>
               </>
-            )} */}
+            )}
           </ul>
         </nav>
       </div>
 
       <div className="bottom">
         <div className="item" onClick={() => navigate("/app")}>
-          <MdSwapHoriz  className="icon" />
+          <MdSwapHoriz  className="bottom-icon" />
           <span className="label">Change Type</span>
         </div>
         {userEmail && (
           <div className="item">
-            <MdEmail className="icon" />
+            <MdEmail className="bottom-icon" />
             <span className="label">{userEmail}</span>
           </div>
         )}
         <div className="item" onClick={handleLogout}>
-          <MdOutlineAccessTimeFilled className="icon" />
+          <MdOutlineAccessTimeFilled className="bottom-icon" />
           <span className="label">Logout</span>
         </div>
       </div>

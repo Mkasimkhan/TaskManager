@@ -1,4 +1,3 @@
-// src/pages/TaskSelectionPage.jsx
 import { useNavigate } from "react-router-dom";
 import { useTaskView } from "../context/TaskViewContext";
 import { MdOutlineAssignment, MdOutlineInbox } from "react-icons/md";
@@ -8,8 +7,8 @@ const TaskSelectionPage = () => {
   const { taskView, setTaskView } = useTaskView();
 
   const handleSelection = (view) => {
-    setTaskView(view); // "Created" or "Received"
-    navigate("/app/allTasks"); // Go to the tasks page
+    setTaskView(view); 
+    navigate("/app/allTasks"); 
   };
 
   const options = [

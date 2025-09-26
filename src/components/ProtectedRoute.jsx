@@ -10,7 +10,6 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check localStorage first
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
@@ -18,13 +17,12 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
         setUser({ uid: parsedUser.uid, email: parsedUser.email });
         setUserRole(parsedUser.role);
         setLoading(false);
-        return; // Exit early — no need for Firebase check
+        return; 
       } catch (e) {
         console.warn('Failed to parse user from localStorage', e);
       }
     }
 
-    // Fallback: Firebase Auth + Firestore check
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {

@@ -24,7 +24,6 @@ const RootLayout = () => {
 
   const title = pageTitles[location.pathname] || 'Task Board';
 
-  // ✅ Hide Sidebar if pathname is exactly /app
   const hideSidebar = location.pathname === '/app' || location.pathname === '/app/';
 
   return (

@@ -118,7 +118,6 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
       return;
     }
 
-    // Validation
     if (!fullEditingTask.title.trim()) {
       alert("Title is required.");
       return;
@@ -163,11 +162,9 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
       lastUpdatedOn: new Date().toISOString(),
     };
 
-    // Set completedDate based on status
     updatedTask.completedDate =
       updatedTask.status === "Completed" ? new Date().toISOString() : null;
 
-    // Handle remarks
     if (newRemark.trim()) {
       const newRemarkObject = {
         text: newRemark.trim(),
@@ -381,7 +378,6 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                       {columns.map((col) => (
                         <th key={col.key}>{col.label}</th>
                       ))}
-                      {/* {taskType !== "Created" && <th>Update</th>} */}
                       {taskType !== "Created" && user?.role === "admin" && (
                         <th>Actions</th>
                       )}
@@ -442,51 +438,6 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                               : task[col.key]}
                           </td>
                         ))}
-                        {/* {taskType !== "Created" && (
-                          <td>
-                            <button
-                              disabled={
-                                task.status === "Completed" &&
-                                user?.role === "user"
-                              }
-                              style={{
-                                backgroundColor:
-                                  task.status === "Pending"
-                                    ? "#facc15"
-                                    : task.status === "Completed"
-                                    ? "#22c55e"
-                                    : "#3b82f6",
-                                color: "white",
-                                padding: "6px 12px",
-                                border: "none",
-                                borderRadius: "6px",
-                                cursor:
-                                  task.status === "Completed" &&
-                                  user?.role === "user"
-                                    ? "not-allowed"
-                                    : "pointer",
-                                opacity:
-                                  task.status === "Completed" &&
-                                  user?.role === "user"
-                                    ? 0.6
-                                    : 1,
-                              }}
-                              onClick={() => {
-                                if (
-                                  !(
-                                    task.status === "Completed" &&
-                                    user?.role === "user"
-                                  )
-                                ) {
-                                  setEditingTask(task);
-                                  setNewRemark("");
-                                }
-                              }}
-                            >
-                              Update
-                            </button>
-                          </td>
-                        )} */}
                         {taskType !== "Created" && user?.role === "admin" && (
                           <td>
                             <div className="flex gap-2">
@@ -724,24 +675,6 @@ const FilteredTasksTable = ({ taskType, title = "All Tasks" }) => {
                   </select>
                 </div>
               </div>
-
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Assignee (email):
-                </label>
-                <input
-                  type="email"
-                  value={fullEditingTask.assignee}
-                  onChange={(e) =>
-                    setFullEditingTask({
-                      ...fullEditingTask,
-                      assignee: e.target.value,
-                    })
-                  }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  aria-label="Task assignee email"
-                />
-              </div> */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Assignee:

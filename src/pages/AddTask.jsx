@@ -22,7 +22,7 @@ const AddTask = () => {
   });
 
   const [userEmails, setUserEmails] = useState([]);
-  const [installationType, setInstallationType] = useState(""); // <-- NEW
+  const [installationType, setInstallationType] = useState(""); 
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -46,7 +46,6 @@ const AddTask = () => {
       [name]: value,
     });
 
-    // Reset installation type when changing task type
     if (name === "type" && value !== "Installation") {
       setInstallationType("");
     }
@@ -99,10 +98,8 @@ const AddTask = () => {
     };
 
     try {
-      // 1. Create the main task
       await addDoc(collection(db, "tasks"), serializableFormData);
 
-      // 2. If Installation + New Installation → also create Security Briefing
       if (type === "Installation" && installationType === "new") {
         const securityBriefingTask = {
           ...serializableFormData,
@@ -141,7 +138,6 @@ const AddTask = () => {
       <h1 className="text-3xl font-bold mt-4 mb-4 text-center">Add New Task</h1>
       <div className="grid place-items-center">
         <form className="w-full max-w-lg" onSubmit={handleSubmit}>
-          {/* Title */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">
               Client Name
@@ -157,7 +153,6 @@ const AddTask = () => {
             />
           </div>
 
-          {/* Description */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">
               Description
@@ -171,7 +166,6 @@ const AddTask = () => {
             />
           </div>
 
-          {/* Start and End Dates */}
           <div className="flex gap-4 mb-6">
             <div className="w-1/2">
               <label className="block text-gray-700 text-xs font-bold mb-2">
@@ -197,7 +191,6 @@ const AddTask = () => {
             </div>
           </div>
 
-          {/* Status and Priority */}
           <div className="flex gap-4 mb-6">
             <div className="w-1/2">
               <label className="block text-gray-700 text-xs font-bold mb-2">
@@ -231,7 +224,6 @@ const AddTask = () => {
             </div>
           </div>
 
-          {/* Task Type */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">
               Task Type
@@ -253,7 +245,6 @@ const AddTask = () => {
             </select>
           </div>
 
-          {/* Installation Checkboxes */}
           {formData.type === "Installation" && (
             <div className="mb-6">
               <label className="block text-gray-700 text-xs font-bold mb-2">
@@ -284,7 +275,6 @@ const AddTask = () => {
             </div>
           )}
 
-          {/* Assignee Dropdown */}
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-bold mb-2">
               Assignee
@@ -304,7 +294,6 @@ const AddTask = () => {
             </select>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full py-3 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-400 transition"

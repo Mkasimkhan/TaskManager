@@ -66,7 +66,6 @@ const Sidebar = () => {
                 label: "Dashboard",
                 icon: <MdDashboard />,
               },
-              // { to: "/app/createdTasks", label: "Created Tasks", icon: <MdPendingActions /> },
               {
                 to: "/app/removalTask",
                 label: "Removal Tasks",

@@ -36,7 +36,6 @@ const TaskHeader = ({
         {toggle && (
             <div className="my-6 mx-4 ">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 flex-wrap">
-                    {/* Filter Section */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                         <span className="text-indigo-600 font-semibold">Date Range:</span>
                         <input
@@ -52,8 +51,6 @@ const TaskHeader = ({
                             className="bg-white px-4 py-2 rounded-xl border border-gray-300 shadow-sm"
                         />
                     </div>
-
-                    {/* Sort Section */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                         <span className="text-indigo-600 font-semibold">Sort By:</span>
                         <select

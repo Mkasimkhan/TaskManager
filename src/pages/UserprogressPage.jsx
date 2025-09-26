@@ -61,23 +61,6 @@ const UserProgressPage = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     try {
-  //       const querySnapshot = await getDocs(collection(db, "users"));
-  //       const userList = querySnapshot.docs.map((doc) => doc.data().email);
-  //       setUsers(userList);
-  //     } catch (error) {
-  //       console.error("Failed to fetch users:", error);
-  //     }
-  //   };
-  //   fetchUsers();
-  // }, []);
-
-  // useEffect(() => {
-  //   dispatch(fetchTasksFromFirebase({ role: "admin" }));
-  // }, [dispatch]);
-
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -87,11 +70,9 @@ const UserProgressPage = () => {
         const userList = querySnapshot.docs.map((doc) => doc.data().email);
 
         if (currentUser?.role === "user") {
-          // user can only see themselves
           setUsers([currentUser.email]);
-          setSelectedUser(currentUser.email); // preselect their email
+          setSelectedUser(currentUser.email); 
         } else {
-          // admin sees all
           setUsers(userList);
         }
       } catch (error) {
@@ -136,7 +117,7 @@ const UserProgressPage = () => {
         row[col.header] = col.render
           ? typeof col.render(task[col.key]) === "string"
             ? col.render(task[col.key])
-            : "" // Skip complex JSX for Excel
+            : "" 
           : task[col.key] ?? "";
       });
       return row;

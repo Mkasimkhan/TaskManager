@@ -6,7 +6,7 @@ import { db } from "../firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const AddTask = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({  
     title: "",
     description: "",
     assignor: "",
@@ -240,8 +240,9 @@ const AddTask = () => {
               <option value="Health CheckUp">Health CheckUp</option>
               <option value="Complaint">Complaint</option>
               <option value="Security Briefing">Security Briefing</option>
-              <option value="Others">Others</option>
               <option value="Development">Development</option>
+              <option value="Payment">Payment</option>
+              <option value="Others">Others</option>
             </select>
           </div>
 

@@ -17,6 +17,7 @@ import TaskSelectionPage from "./pages/TaskSelectionPage"; // NEW
 import { TaskViewProvider } from "./context/TaskViewContext";
 import OthersTasks from "./pages/OthersPage";
 import DevTasks from "./pages/DevTasks";
+import PaymentTasksPage from "./pages/PaymentTasksPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "statsTask", element: <Dashboard /> },
       { path: "user-progress", element: <UserProgressPage /> },
       { path: "user-management", element: <UserManagement /> },
+      { path: "paymentTasks", element: <PaymentTasksPage /> },
       {
         path: "add-user",
         element: (

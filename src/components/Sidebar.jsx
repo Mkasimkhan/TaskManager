@@ -14,6 +14,7 @@ import {
   MdReportProblem,
   MdSecurity,
   MdAssignment,
+  MdMoney,
 } from "react-icons/md";
 import { GrInProgress } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
@@ -91,6 +92,29 @@ const Sidebar = () => {
                 label: "Security Briefing Tasks",
                 icon: <MdSecurity />,
               },
+            ].map((item, index) => (
+              <Link key={index} to={item.to}>
+                <span className="icon">{item.icon}</span>
+                <span className="label">{item.label}</span>
+              </Link>
+            ))}
+
+            {userRole === "admin" && (
+              <>
+                
+                <Link to="/app/devTasks">
+                  <span className="icon"><MdCode /></span>
+                  <span className="label">Development Tasks</span>
+                </Link>
+              </>
+            )}
+
+             {[
+              {
+                to: "/app/paymentTasks",
+                label: "Payment Tasks",
+                icon: <MdMoney />,
+              },
               {
                 to: "/app/otherTasks",
                 label: "Other Tasks",
@@ -117,16 +141,6 @@ const Sidebar = () => {
                 <span className="label">{item.label}</span>
               </Link>
             ))}
-
-            {userRole === "admin" && (
-              <>
-                
-                <Link to="/app/devTasks">
-                  <span className="icon"><MdCode /></span>
-                  <span className="label">Development Tasks</span>
-                </Link>
-              </>
-            )}
           </ul>
         </nav>
       </div>
